@@ -13,8 +13,9 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 // import { loginUser } from "@/services/AuthServices";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { loginUser } from "@/Services/AuthServices";
+import { toast } from "sonner";
 // import { useUser } from "@/components/context/UserContext";
 
 export function LoginForm() {
@@ -33,19 +34,18 @@ export function LoginForm() {
       email,
       password,
     };
-    // console.log(loginData);
+    console.log(loginData);
 
     try {
       //   console.log(values);
-      //   const result = await loginUser(loginData);
-      // console.log(result);
-      //   if (result?.success) {
-      //     toast.success(result?.message);
-      //     handleUser();
-      //     router.push("/");
-      //   } else {
-      //     toast.success(result?.message, { duration: 2000 });
-      //   }
+      const result = await loginUser(loginData);
+      console.log(result);
+      if (result?.success) {
+        toast.success("Login Successfull...");
+        router.push("/dashboard");
+      } else {
+        toast.success(result?.message, { duration: 2000 });
+      }
     } catch (err) {
       toast.error("Something went wrong", { duration: 2000 });
     }
