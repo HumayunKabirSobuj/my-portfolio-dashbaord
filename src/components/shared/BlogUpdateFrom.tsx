@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { TBlog } from "@/types";
@@ -6,6 +7,8 @@ import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { Label } from "../ui/label";
+import RitchTextEditor from "../ritch-text-editor";
 
 interface BlogFromData {
   title: string;
@@ -15,7 +18,16 @@ interface BlogFromData {
 
 export default function BlogUpdateFrom(blogData: Record<string, unknown>) {
   const blog = blogData?.blogData as TBlog;
-
+  const [shortDescription, setShortDescription] = useState("");
+  const [longDescription, setLongDescription] = useState("");
+  const onChangeForShort = (content: string) => {
+    setShortDescription(JSON.stringify(content));
+    // console.log(content);
+  };
+  const onChangeForLong = (content: string) => {
+    setLongDescription(JSON.stringify(content));
+    // console.log(content);
+  };
   const {
     register,
     handleSubmit,
@@ -26,14 +38,18 @@ export default function BlogUpdateFrom(blogData: Record<string, unknown>) {
   const onSubmit: SubmitHandler<BlogFromData> = async (data) => {
     // console.log(data);
 
-    const { short_description, long_description, title } = data;
+    const { title } = data;
 
     try {
       setLoading(true);
 
       const blogData = {
         blogId: blog._id,
-        blogInfo: { title, short_description, long_description },
+        blogInfo: {
+          title,
+          short_description: shortDescription,
+          long_description: longDescription,
+        },
       };
 
       // console.log(blogData);
@@ -61,29 +77,29 @@ export default function BlogUpdateFrom(blogData: Record<string, unknown>) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen ">
       <div className="flex flex-col lg:flex-row p-4 gap-4 h-screen">
         {/* Left Side - Profile Card */}
 
         {/* Right Side - Content */}
-        <div className="w-full mx-auto space-y-6  bg-gray-800 rounded-3xl">
+        <div className="w-full mx-auto space-y-6   rounded-3xl">
           {/* Add Blog Post Section */}
-          <div className=" rounded-lg shadow-lg  h-screen">
-            <h3 className="text-white text-lg font-semibold mb-4 lg:px-8 px-3 pt-4">
+          <div className="   h-screen">
+            <h3 className="text-black text-lg font-semibold mb-4 lg:px-8 px-3 pt-4">
               Update Your Blog
             </h3>
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className="  bg-gray-800 lg:px-8 px-3 rounded-3xl"
+              className="   lg:px-8 px-3 rounded-3xl"
             >
               <div className="space-y-5">
                 <div>
-                  <label className="block text-gray-300 text-sm mb-2 ">
+                  <label className="block text-black text-sm mb-2 ">
                     Title
                   </label>
                   <input
                     type="text"
-                    className="w-full bg-gray-700 text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="w-full  text-black rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
                     placeholder="Enter blog title"
                     defaultValue={blog?.title}
                     {...register("title", { required: true })}
@@ -91,58 +107,31 @@ export default function BlogUpdateFrom(blogData: Record<string, unknown>) {
                 </div>
                 {/* Short Description */}
                 <div>
-                  <label className="block text-gray-300 text-sm mb-2">
-                    Short Description
-                  </label>
-                  {/* <textarea
-                    className="w-full bg-gray-700 text-white rounded-lg px-4 py-2 h-32 focus:ring-2 focus:ring-blue-500 outline-none"
-                    placeholder="Write your blog description..."
-                    defaultValue={blog?.short_description}
-                    {...register("short_description", {
-                      required: "Blog description is required",
-                      maxLength: {
-                        value: 720,
-                        message:
-                          "Short Description cannot exceed 720 characters",
-                      },
-                    })}
-                  ></textarea> */}
-                  {errors.short_description && (
-                    <p className="text-red-500 text-sm">
-                      {errors.short_description.message}
-                    </p>
-                  )}
+                  <Label>Short Description</Label>
+
+                  <div className="w-full mx-auto mt-2">
+                    <RitchTextEditor
+                      content={shortDescription}
+                      onChange={onChangeForShort}
+                    />
+                  </div>
                 </div>
                 {/* Long Description */}
                 <div>
-                  <label className="block text-gray-300 text-sm mb-2">
-                    Long Description
-                  </label>
-
-                  {/* <textarea
-                    className="w-full bg-gray-700 text-white rounded-lg px-4 py-2 h-40 focus:ring-2 focus:ring-blue-500 outline-none"
-                    placeholder="Write your blog long description..."
-                    defaultValue={blog?.long_description}
-                    {...register("long_description", {
-                      required: "Long description is required",
-                      maxLength: {
-                        value: 2200,
-                        message:
-                          "Long description cannot exceed 2200 characters",
-                      },
-                    })}
-                  ></textarea> */}
-                  {errors.long_description && (
-                    <p className="text-red-500 text-sm">
-                      {errors.long_description.message}
-                    </p>
-                  )}
+                  <Label>Long Description</Label>
+                  {/* Long Description */}
+                  <div className="w-full mx-auto mt-2">
+                    <RitchTextEditor
+                      content={longDescription}
+                      onChange={onChangeForLong}
+                    />
+                  </div>
                 </div>
               </div>
               <div className="mt-8  mb-2 text-center ">
                 <button
                   type="submit"
-                  className="lg:w-1/3 w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-2  rounded-lg transition-colors"
+                  className="lg:w-1/3 w-full bg-blue-600 hover:bg-blue-700 text-black px-6 py-2  rounded-lg transition-colors"
                 >
                   Update Blog
                 </button>

@@ -1,8 +1,8 @@
 "use client";
-import RitchTextEditor from "@/components/ritch-text-editor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { addBlog } from "@/Services/Blogs";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
@@ -11,6 +11,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 interface BlogFromData {
   title: string;
+  short_description: string;
+  long_description: string;
   image: FileList;
 }
 
@@ -26,21 +28,10 @@ export default function AddBlog() {
   // console.log("data=>",data);
   // console.log(user);
 
-  const [shortDescription, setShortDescription] = useState("");
-  const [longDescription, setLongDescription] = useState("");
-  const onChangeForShort = (content: string) => {
-    setShortDescription(JSON.stringify(content));
-    // console.log(content);
-  };
-  const onChangeForLong = (content: string) => {
-    setLongDescription(JSON.stringify(content));
-    // console.log(content);
-  };
-
   const onSubmit: SubmitHandler<BlogFromData> = async (data) => {
     // console.log(data);
 
-    const { title } = data;
+    const { short_description, long_description, title } = data;
 
     try {
       setLoading(true);
@@ -67,8 +58,8 @@ export default function AddBlog() {
 
       const blogData = {
         title,
-        short_description: shortDescription,
-        long_description: longDescription,
+        short_description,
+        long_description,
         image: imageUrl,
       };
 
@@ -129,25 +120,47 @@ export default function AddBlog() {
                 <div>
                   <Label>Short Description</Label>
 
-                  
-
-                  <div className="w-full mx-auto mt-2">
-                    <RitchTextEditor
-                      content={shortDescription}
-                      onChange={onChangeForShort}
-                    />
-                  </div>
+                  <Textarea
+                    id="short_description"
+                    placeholder="Write your project short description..."
+                    className="min-h-[120px] mt-2"
+                    {...register("short_description", {
+                      required: "Short description is required",
+                      maxLength: {
+                        value: 720,
+                        message:
+                          "Short description cannot exceed 720 characters",
+                      },
+                    })}
+                  />
+                  {errors.short_description && (
+                    <p className="text-red-500 text-sm">
+                      {errors.short_description.message}
+                    </p>
+                  )}
                 </div>
                 {/* Long Description */}
                 <div>
                   <Label>Long Description</Label>
                   {/* Long Description */}
-                  <div className="w-full mx-auto mt-2">
-                    <RitchTextEditor
-                      content={longDescription}
-                      onChange={onChangeForLong}
-                    />
-                  </div>
+                  <Textarea
+                    id="long_description"
+                    placeholder="Write your project long description..."
+                    className="min-h-[160px] mt-2"
+                    {...register("long_description", {
+                      required: "Long description is required",
+                      maxLength: {
+                        value: 2200,
+                        message:
+                          "Long description cannot exceed 2200 characters",
+                      },
+                    })}
+                  />
+                  {errors.long_description && (
+                    <p className="text-red-500 text-sm">
+                      {errors.long_description.message}
+                    </p>
+                  )}
                 </div>
 
                 {/* Image */}
