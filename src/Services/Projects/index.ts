@@ -1,5 +1,4 @@
 export const addProject = async (data: Record<string, unknown>) => {
-  // console.log("function =>", data);
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_API}/projects/add-project`,
     {
@@ -7,20 +6,24 @@ export const addProject = async (data: Record<string, unknown>) => {
       headers: {
         "Content-Type": "application/json",
       },
+
       body: JSON.stringify(data),
       cache: "no-store",
     }
   );
-  const projcetInfo = await res.json();
-  return projcetInfo;
-};
 
+  const projectInfo = await res.json();
+  return projectInfo;
+};
 
 export const getAllProject = async () => {
   const res = await fetch(`http://localhost:8080/api/projects`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
+    },
+    next: {
+      tags: ["Project"],
     },
     cache: "no-store",
   });
@@ -29,14 +32,33 @@ export const getAllProject = async () => {
 };
 
 export const DeleteProject = async (data: Record<string, unknown>) => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/projects/delete-project`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-    cache: "no-store",
-  });
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_API}/projects/delete-project`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+      cache: "no-store",
+    }
+  );
+  const projectInfo = await res.json();
+  return projectInfo;
+};
+export const UpdateProject = async (data: Record<string, unknown>) => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_API}/projects/update-project`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      
+      body: JSON.stringify(data),
+      cache: "no-store",
+    }
+  );
   const projectInfo = await res.json();
   return projectInfo;
 };
