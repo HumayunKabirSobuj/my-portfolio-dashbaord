@@ -1,24 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
+import { useEffect, useState } from "react"
+import Image from "next/image"
+import Link from "next/link"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Loader2, PencilIcon, Trash2Icon } from "lucide-react";
-import { DeleteProject, getAllProject } from "@/Services/Projects";
-import { TBlog } from "@/types";
-import { useUser } from "@/components/context/UserContext";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Button } from "@/components/ui/button"
+import { Loader2, PencilIcon, Trash2Icon } from "lucide-react"
+import { DeleteProject, getAllProject } from "@/Services/Projects"
+import type { TBlog } from "@/types"
+import { useUser } from "@/components/context/UserContext"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,72 +22,72 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { toast } from "sonner";
+} from "@/components/ui/alert-dialog"
+import { toast } from "sonner"
 
 const ManageProjectPage = () => {
-  const [projects, setProjects] = useState<{ data: TBlog[] }>({ data: [] });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const { user } = useUser();
+  const [projects, setProjects] = useState<{ data: TBlog[] }>({ data: [] })
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const { user } = useUser()
   //   console.log(user);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        setLoading(true);
-        const projectsData = await getAllProject();
-        setProjects(projectsData);
+        setLoading(true)
+        const projectsData = await getAllProject()
+        setProjects(projectsData)
       } catch (err) {
-        setError("Failed to load projects");
-        console.error(err);
+        setError("Failed to load projects")
+        console.error(err)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchProjects();
-  }, []);
+    fetchProjects()
+  }, [])
 
   const handleDelete = async (id: string) => {
     // console.log(id);
 
-    const data = { id: id };
+    const data = { id: id }
 
     try {
-      setIsDeleting(true);
-      const result = await DeleteProject(data);
+      setIsDeleting(true)
+      const result = await DeleteProject(data)
 
       if (result?.success) {
-        toast.success(result.message || "Project deleted successfully");
+        toast.success(result.message || "Project deleted successfully")
       } else {
-        toast.error(result?.message || "Failed to delete project");
+        toast.error(result?.message || "Failed to delete project")
       }
+      setProjects((prevProjects) => ({
+        ...prevProjects,
+        data: prevProjects.data.filter((blog) => blog._id !== id),
+      }))
     } catch (error) {
-      toast.error("An error occurred while deleting the project");
+      toast.error("An error occurred while deleting the project")
     } finally {
-      setIsDeleting(false);
+      setIsDeleting(false)
     }
-  };
+  }
 
   if (!user) {
     return (
       <div className="flex justify-center items-center h-full">
-        <h1 className="text-2xl text-red-400 border border-red-400 px-2 py-4">
-          You are not authorized..
-        </h1>
+        <h1 className="text-2xl text-red-400 border border-red-400 px-2 py-4">You are not authorized..</h1>
       </div>
-    );
+    )
   }
   if (user?.email !== process.env.NEXT_PUBLIC_USER_EMAIL) {
     return (
       <div className="flex justify-center items-center h-full">
-        <h1 className="text-2xl text-red-400 border border-red-400 px-2 py-4">
-          You are not authorized..
-        </h1>
+        <h1 className="text-2xl text-red-400 border border-red-400 px-2 py-4">You are not authorized..</h1>
       </div>
-    );
+    )
   }
 
   return (
@@ -135,15 +128,11 @@ const ManageProjectPage = () => {
                             />
                           </div>
                         </TableCell>
-                        <TableCell className="font-medium">
-                          {project?.title}
-                        </TableCell>
+                        <TableCell className="font-medium">{project?.title}</TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
                             <Button asChild variant="outline" size="sm">
-                              <Link
-                                href={`/dashboard/update-project/${project?._id}`}
-                              >
+                              <Link href={`/dashboard/update-project/${project?._id}`}>
                                 <PencilIcon className="h-4 w-4 mr-1" />
                                 Update
                               </Link>
@@ -157,12 +146,9 @@ const ManageProjectPage = () => {
                               </AlertDialogTrigger>
                               <AlertDialogContent>
                                 <AlertDialogHeader>
-                                  <AlertDialogTitle>
-                                    Are you sure?
-                                  </AlertDialogTitle>
+                                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                                   <AlertDialogDescription>
-                                    This action cannot be undone. This will
-                                    permanently delete the project.
+                                    This action cannot be undone. This will permanently delete the project.
                                   </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
@@ -195,7 +181,7 @@ const ManageProjectPage = () => {
         </CardContent>
       </Card>
     </div>
-  );
-};
+  )
+}
 
-export default ManageProjectPage;
+export default ManageProjectPage

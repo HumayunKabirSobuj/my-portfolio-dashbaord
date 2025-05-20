@@ -138,7 +138,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
               <span className="sr-only">Open sidebar</span>
             </Button>
             <div className="w-full">
-              <h1 className="text-lg font-semibold flex justify-end items-center py-4">
+              <h1 className="text-lg font-semibold flex justify-end items-center py-4 bg-gray-50" >
                 Dashboard
               </h1>
             </div>
